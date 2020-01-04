@@ -27,25 +27,20 @@ PROJ_ROOT ?= .
 MAIN_DIR ?= .
 EXE_DIR ?= ./build
 
-# Any .c file 1-directory deep
-MOD_SRC = $(wildcard */*.c)
-# Any .c file in project root dir
-MAIN_SRC = $(wildcard $(MAIN_DIR)/*.c)
-
-# The executable's file name is generated from the runner source's name
+# The executable's file name is generated from the main source's name
+MAIN_SRC = $(MAIN_DIR)/main.c
 EXECUTABLE = $(patsubst $(MAIN_DIR)/%.c,$(EXE_DIR)/%$(TARGET_EXTENSION),$(MAIN_SRC))
 
-# Complete list of all source files to be compiled for the build
-SRC_FILES = $(MOD_SRC) $(MAIN_SRC)
+# Complete list of all source files to be compiled/linked for the build
+SRC_FILES = $(wildcard ./*/*/*/*/*.c ./*/*/*/*.c ./*/*/*.c ./*/*.c ./*.c)
 
-# Include dirs are any directory in project root dir
-INC_DIRS := $(shell find ./* -type d)
+# Include dirs are assumed to be where the srcs are
+INC_DIRS = $(dir $(SRC_FILES))
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 # List of all headers so we can track their existence as dependencies
 INC_FILES=\
-  $(wildcard $(INC_DIRS)/%.h) \
-  $(wildcard %.h)
+  $(wildcard $(INC_DIRS)/%.h)
 
 # Special #defines desired for the build
 SYMBOLS=
